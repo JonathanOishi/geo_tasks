@@ -15,7 +15,6 @@ class HomePage extends StatelessWidget {
         onPressed: () {
           Navigator.of(context).pushNamed("/AddEditTasks");
         },
-
         child: Icon(
           Icons.add,
           size: 40,

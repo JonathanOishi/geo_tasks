@@ -6,17 +6,51 @@ class CustomCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 150,
-      width: 150,
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
-          color: AppColors.primary,
-          shadowColor: Colors.red,
-          surfaceTintColor: Colors.white,
-
-          child: Text('Teste'),
+    return Padding(
+      padding: const EdgeInsets.all(12.0),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(20),
+          color: AppColors.surface,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Comprar Suplementos',
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+                Icon(Icons.edit),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(Icons.calendar_month_outlined),
+                Text("17:00"),
+                Icon(
+                  Icons.delete,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Text('Farmacia 24h'),
+                SizedBox(width: 40),
+                Text('Pendente'),
+              ],
+            ),
+          ],
         ),
       ),
     );

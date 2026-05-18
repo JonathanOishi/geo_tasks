@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geo_tasks/core/theme/app_theme.dart';
-import 'package:geo_tasks/pages/add_edit_task_page.dart';
+
 import 'package:geo_tasks/pages/home_page.dart';
-import 'package:geo_tasks/routes/routes.dart';
+import 'package:geo_tasks/routes/app_routes.dart';
 
 void main() {
   runApp(const GeoTasks());
@@ -17,9 +17,7 @@ class GeoTasks extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       home: const HomePage(),
       theme: AppTheme.light,
-      routes: <String, WidgetBuilder>{
-        Routes.ADDEDITTASK: (context) => AddEditTaskPage(),
-      },
+      routes: AppRoutes.routes,
     );
   }
 }

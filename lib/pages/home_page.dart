@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:geo_tasks/widgets/custom_button.dart';
 import 'package:geo_tasks/widgets/custom_card.dart';
 
 class HomePage extends StatelessWidget {
@@ -24,10 +23,6 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Conteudo'),
-            CustomButton(
-              customText: 'Salvar',
-            ),
             CustomCard(),
           ],
         ),

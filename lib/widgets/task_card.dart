@@ -7,6 +7,9 @@ class TaskCard extends StatelessWidget {
   final String time;
   final String location;
   final bool isCompleted;
+  final VoidCallback onDelete;
+  final VoidCallback onComplete;
+  final VoidCallback onEdit;
 
   const TaskCard({
     super.key,
@@ -14,6 +17,9 @@ class TaskCard extends StatelessWidget {
     required this.time,
     required this.location,
     required this.isCompleted,
+    required this.onDelete,
+    required this.onComplete,
+    required this.onEdit,
   });
 
   @override
@@ -41,21 +47,21 @@ class TaskCard extends StatelessWidget {
               extentRatio: 0.75,
               children: [
                 SlidableAction(
-                  onPressed: (_) {},
+                  onPressed: (_) => onComplete(),
                   backgroundColor: AppColors.success,
                   foregroundColor: AppColors.onPrimary,
                   icon: Icons.check_circle,
                   label: 'Concluir',
                 ),
                 SlidableAction(
-                  onPressed: (_) {},
+                  onPressed: (_) => onEdit(),
                   backgroundColor: AppColors.warning,
                   foregroundColor: AppColors.onPrimary,
                   icon: Icons.edit,
                   label: 'Editar',
                 ),
                 SlidableAction(
-                  onPressed: (_) {},
+                  onPressed: (_) => onDelete(),
                   backgroundColor: AppColors.error,
                   foregroundColor: AppColors.onPrimary,
                   icon: Icons.delete,

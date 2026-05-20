@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:geo_tasks/core/controllers/task_form_controller.dart';
+import 'package:geo_tasks/core/models/tasks.dart';
 import 'package:geo_tasks/core/theme/app_colors.dart';
+import 'package:geo_tasks/core/utils/task_formatters.dart';
 import 'package:geo_tasks/widgets/custom_text_field.dart';
 
 class AddEditTaskPage extends StatefulWidget {
@@ -10,92 +13,37 @@ class AddEditTaskPage extends StatefulWidget {
 }
 
 class _AddEditTaskPageState extends State<AddEditTaskPage> {
-  final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
-
-  DateTime? _selectedDate;
-  TimeOfDay? _selectedTime;
+  final TaskFormController _controller = TaskFormController();
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _dateController.dispose();
-    _timeController.dispose();
-    _notesController.dispose();
+    _controller.dispose();
     super.dispose();
   }
 
-  String _formatDate(DateTime date) {
-    final day = date.day.toString().padLeft(2, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final year = date.year.toString();
-    return '$day/$month/$year';
-  }
-
-  String _formatTime(TimeOfDay time) {
-    final hour = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
-    return '$hour:$minute';
-  }
-
-  Future<void> _pickDate() async {
-    final now = DateTime.now();
-    final result = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? now,
-      firstDate: DateTime(now.year - 1),
-      lastDate: DateTime(now.year + 5),
-      helpText: 'Selecione a data',
-      cancelText: 'Cancelar',
-      confirmText: 'OK',
-    );
-    if (result == null) return;
-
-    setState(() {
-      _selectedDate = result;
-      _dateController.text = _formatDate(result);
-    });
-  }
-
-  Future<void> _pickTime() async {
-    final result = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime ?? TimeOfDay.now(),
-      helpText: 'Selecione o horário',
-      cancelText: 'Cancelar',
-      confirmText: 'OK',
-    );
-    if (result == null) return;
-
-    setState(() {
-      _selectedTime = result;
-      _timeController.text = _formatTime(result);
-    });
-  }
-
-  void _saveTask() {
-    if (_titleController.text.trim().isEmpty) {
-      _showMessage('Informe o nome da tarefa.');
-      return;
-    }
-    if (_selectedDate == null) {
-      _showMessage('Selecione uma data.');
-      return;
-    }
-    if (_selectedTime == null) {
-      _showMessage('Selecione um horário.');
-      return;
-    }
-
-    _showMessage('Tarefa salva com sucesso!');
-  }
-
   void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Recebe a tarefa dos arguments (se for editar)
+    final task = ModalRoute.of(context)?.settings.arguments as Task?;
+
+    if (task != null) {
+      // Pré-preenche os campos
+      _controller.titleController.text = task.title;
+      _controller.dateController.text =
+          '${task.date.day.toString().padLeft(2, '0')}/${task.date.month.toString().padLeft(2, '0')}/${task.date.year}';
+      _controller.timeController.text = formatTaskTime(task.time);
+      _controller.notesController.text = task.location ?? '';
+      _controller.setSelectedDate(task.date);
+      _controller.setSelectedTime(task.time);
+    }
   }
 
   @override
@@ -136,7 +84,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                   CustomTextField(
                     label: 'Nome da Tarefa',
                     hintText: 'Ex: Buscar encomenda no correio',
-                    controller: _titleController,
+                    controller: _controller.titleController,
                   ),
                   const SizedBox(height: 18),
                   Row(
@@ -145,10 +93,10 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                         child: CustomTextField(
                           label: 'Data',
                           hintText: 'dd/mm/aaaa',
-                          controller: _dateController,
+                          controller: _controller.dateController,
                           icon: Icons.calendar_today_outlined,
                           readOnly: true,
-                          onTap: _pickDate,
+                          onTap: () => _controller.pickDate(context),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -156,10 +104,10 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                         child: CustomTextField(
                           label: 'Horário',
                           hintText: '--:--',
-                          controller: _timeController,
+                          controller: _controller.timeController,
                           icon: Icons.access_time_outlined,
                           readOnly: true,
-                          onTap: _pickTime,
+                          onTap: () => _controller.pickTime(context),
                         ),
                       ),
                     ],
@@ -187,9 +135,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                     ),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(24),
-                      onTap: () {
-                        _showMessage('Capture a localização aqui.');
-                      },
+                      onTap: () => _showMessage('Capture a localização aqui.'),
                       child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -222,7 +168,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                   ),
                   const SizedBox(height: 18),
                   TextField(
-                    controller: _notesController,
+                    controller: _controller.notesController,
                     minLines: 2,
                     maxLines: 3,
                     decoration: InputDecoration(
@@ -242,7 +188,20 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: _saveTask,
+                      onPressed: () {
+                        final error = _controller.validate();
+                        if (error != null) {
+                          _showMessage(error);
+                          return;
+                        }
+
+                        final existingTask =
+                            ModalRoute.of(context)?.settings.arguments as Task?;
+                        final task = _controller.buildTask(
+                          existingTask: existingTask,
+                        );
+                        Navigator.pop(context, task);
+                      },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(

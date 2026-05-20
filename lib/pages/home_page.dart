@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geo_tasks/widgets/custom_card.dart';
+import 'package:geo_tasks/widgets/task_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,7 +23,12 @@ class HomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            CustomCard(),
+            TaskCard(
+              title: 'Comprar Whey',
+              time: 'Hoje, 17:00',
+              location: 'Farmácia 24h',
+              isCompleted: true,
+            ),
           ],
         ),
       ),

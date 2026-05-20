@@ -1,11 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:geo_tasks/core/theme/app_colors.dart';
 
-import '../../../../core/theme/app_colors.dart';
+class TaskCard extends StatelessWidget {
+  final String title;
+  final String time;
+  final String location;
+  final bool isCompleted;
 
-class CustomCard extends StatelessWidget {
-  const CustomCard({
+  const TaskCard({
     super.key,
+    required this.title,
+    required this.time,
+    required this.location,
+    required this.isCompleted,
   });
 
   @override
@@ -13,7 +21,7 @@ class CustomCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(15.0),
+      padding: const EdgeInsets.all(15),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
@@ -34,22 +42,22 @@ class CustomCard extends StatelessWidget {
               children: [
                 SlidableAction(
                   onPressed: (_) {},
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.success,
+                  foregroundColor: AppColors.onPrimary,
                   icon: Icons.check_circle,
                   label: 'Concluir',
                 ),
                 SlidableAction(
                   onPressed: (_) {},
-                  backgroundColor: Colors.amber,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.warning,
+                  foregroundColor: AppColors.onPrimary,
                   icon: Icons.edit,
                   label: 'Editar',
                 ),
                 SlidableAction(
                   onPressed: (_) {},
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.error,
+                  foregroundColor: AppColors.onPrimary,
                   icon: Icons.delete,
                   label: 'Excluir',
                 ),
@@ -57,8 +65,8 @@ class CustomCard extends StatelessWidget {
             ),
             child: Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Colors.white,
+              decoration: BoxDecoration(
+                color: AppColors.surfaceLowest,
                 border: Border(
                   left: BorderSide(
                     color: AppColors.primary,
@@ -70,11 +78,12 @@ class CustomCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // TÍTULO
                   Row(
                     children: [
                       Expanded(
                         child: Text(
-                          'Comprar Suplementos',
+                          title,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.bold,
@@ -83,42 +92,53 @@ class CustomCard extends StatelessWidget {
                       ),
                       const Icon(
                         Icons.chevron_right,
-                        color: Colors.grey,
+                        color: AppColors.textSecondary,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+
+                  const SizedBox(height: 8),
+
+                  // DATA / HORA
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.calendar_today_outlined,
                         size: 18,
-                        color: Colors.grey.shade600,
+                        color: AppColors.textSecondary,
                       ),
-                      const SizedBox(width: 10),
+                      const SizedBox(width: 8),
                       Text(
-                        'Hoje, 17:00',
+                        time,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: Colors.grey.shade600,
+                          color: AppColors.textSecondary,
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 5),
+
+                  const SizedBox(height: 12),
+
+                  // CHIPS
                   Wrap(
-                    spacing: 10,
-                    runSpacing: 10,
+                    spacing: 8,
+                    runSpacing: 8,
                     children: [
                       Chip(
                         avatar: const Icon(
                           Icons.location_on_outlined,
                           size: 18,
-                          fontWeight: FontWeight.bold,
                         ),
-                        label: const Text('Farmácia 24h'),
+                        label: Text(location),
                       ),
+
                       Chip(
-                        label: const Text('Pendente'),
+                        backgroundColor: isCompleted
+                            ? AppColors.success.withValues(alpha: 0.15)
+                            : AppColors.warning.withValues(alpha: 0.15),
+                        label: Text(
+                          isCompleted ? 'Concluída' : 'Pendente',
+                        ),
                       ),
                     ],
                   ),

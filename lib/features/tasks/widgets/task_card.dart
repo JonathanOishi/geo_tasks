@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:geo_tasks/core/theme/app_colors.dart';
+import 'package:geo_tasks/app/theme/app_colors.dart';
 
 class TaskCard extends StatelessWidget {
   final String title;
   final String time;
-  final String location;
+  final String? location;
   final bool isCompleted;
   final VoidCallback onDelete;
   final VoidCallback onComplete;
   final VoidCallback onEdit;
+  final VoidCallback onSetCurrentLocation;
 
   const TaskCard({
     super.key,
@@ -20,6 +21,7 @@ class TaskCard extends StatelessWidget {
     required this.onDelete,
     required this.onComplete,
     required this.onEdit,
+    required this.onSetCurrentLocation,
   });
 
   @override
@@ -27,7 +29,7 @@ class TaskCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(15),
+      padding: const EdgeInsets.all(8),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
@@ -71,7 +73,7 @@ class TaskCard extends StatelessWidget {
             ),
             child: Container(
               padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.surfaceLowest,
                 border: Border(
                   left: BorderSide(
@@ -84,7 +86,6 @@ class TaskCard extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // TÍTULO
                   Row(
                     children: [
                       Expanded(
@@ -96,16 +97,21 @@ class TaskCard extends StatelessWidget {
                           ),
                         ),
                       ),
+                      IconButton(
+                        tooltip: 'Usar localizacao atual',
+                        onPressed: onSetCurrentLocation,
+                        icon: const Icon(
+                          Icons.my_location_outlined,
+                          color: AppColors.primary,
+                        ),
+                      ),
                       const Icon(
                         Icons.chevron_right,
                         color: AppColors.textSecondary,
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 8),
-
-                  // DATA / HORA
                   Row(
                     children: [
                       const Icon(
@@ -122,28 +128,25 @@ class TaskCard extends StatelessWidget {
                       ),
                     ],
                   ),
-
                   const SizedBox(height: 12),
-
-                  // CHIPS
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
                     children: [
-                      Chip(
-                        avatar: const Icon(
-                          Icons.location_on_outlined,
-                          size: 18,
+                      if (location != null && location!.trim().isNotEmpty)
+                        Chip(
+                          avatar: const Icon(
+                            Icons.location_on_outlined,
+                            size: 18,
+                          ),
+                          label: Text(location!),
                         ),
-                        label: Text(location),
-                      ),
-
                       Chip(
                         backgroundColor: isCompleted
                             ? AppColors.success.withValues(alpha: 0.15)
                             : AppColors.warning.withValues(alpha: 0.15),
                         label: Text(
-                          isCompleted ? 'Concluída' : 'Pendente',
+                          isCompleted ? 'Concluida' : 'Pendente',
                         ),
                       ),
                     ],

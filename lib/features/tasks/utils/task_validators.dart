@@ -12,7 +12,7 @@ String? validateTaskForm({
     return 'Selecione uma data.';
   }
   if (time == null) {
-    return 'Selecione um horário.';
+    return 'Selecione um horario.';
   }
   return null;
 }

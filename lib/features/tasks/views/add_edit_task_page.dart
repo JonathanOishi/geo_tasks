@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:geo_tasks/core/controllers/task_form_controller.dart';
-import 'package:geo_tasks/core/models/tasks.dart';
-import 'package:geo_tasks/core/theme/app_colors.dart';
-import 'package:geo_tasks/core/utils/task_formatters.dart';
-import 'package:geo_tasks/widgets/custom_text_field.dart';
+import 'package:geo_tasks/app/theme/app_colors.dart';
+import 'package:geo_tasks/features/tasks/models/task.dart';
+import 'package:geo_tasks/features/tasks/viewmodels/task_form_view_model.dart';
+import 'package:geo_tasks/features/tasks/viewmodels/add_edit_task_args.dart';
+import 'package:geo_tasks/features/tasks/widgets/custom_text_field.dart';
 
 class AddEditTaskPage extends StatefulWidget {
   const AddEditTaskPage({super.key});
@@ -13,11 +13,11 @@ class AddEditTaskPage extends StatefulWidget {
 }
 
 class _AddEditTaskPageState extends State<AddEditTaskPage> {
-  final TaskFormController _controller = TaskFormController();
+  final TaskFormViewModel _formViewModel = TaskFormViewModel();
 
   @override
   void dispose() {
-    _controller.dispose();
+    _formViewModel.dispose();
     super.dispose();
   }
 
@@ -28,26 +28,11 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    // Recebe a tarefa dos arguments (se for editar)
-    final task = ModalRoute.of(context)?.settings.arguments as Task?;
-
-    if (task != null) {
-      // Pré-preenche os campos
-      _controller.titleController.text = task.title;
-      _controller.dateController.text =
-          '${task.date.day.toString().padLeft(2, '0')}/${task.date.month.toString().padLeft(2, '0')}/${task.date.year}';
-      _controller.timeController.text = formatTaskTime(task.time);
-      _controller.notesController.text = task.location ?? '';
-      _controller.setSelectedDate(task.date);
-      _controller.setSelectedTime(task.time);
-    }
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)?.settings.arguments as AddEditTaskArgs?;
+    final existingTask = args?.task;
+    _formViewModel.initialize(existingTask);
+
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -55,7 +40,9 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
           onPressed: () => Navigator.of(context).maybePop(),
           icon: const Icon(Icons.arrow_back),
         ),
-        title: const Text('Adicionar Tarefa'),
+        title: Text(
+          args?.isEditing == true ? 'Editar Tarefa' : 'Adicionar Tarefa',
+        ),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -84,7 +71,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                   CustomTextField(
                     label: 'Nome da Tarefa',
                     hintText: 'Ex: Buscar encomenda no correio',
-                    controller: _controller.titleController,
+                    controller: _formViewModel.titleController,
                   ),
                   const SizedBox(height: 18),
                   Row(
@@ -93,28 +80,28 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                         child: CustomTextField(
                           label: 'Data',
                           hintText: 'dd/mm/aaaa',
-                          controller: _controller.dateController,
+                          controller: _formViewModel.dateController,
                           icon: Icons.calendar_today_outlined,
                           readOnly: true,
-                          onTap: () => _controller.pickDate(context),
+                          onTap: () => _formViewModel.pickDate(context),
                         ),
                       ),
                       const SizedBox(width: 12),
                       Expanded(
                         child: CustomTextField(
-                          label: 'Horário',
+                          label: 'Horario',
                           hintText: '--:--',
-                          controller: _controller.timeController,
+                          controller: _formViewModel.timeController,
                           icon: Icons.access_time_outlined,
                           readOnly: true,
-                          onTap: () => _controller.pickTime(context),
+                          onTap: () => _formViewModel.pickTime(context),
                         ),
                       ),
                     ],
                   ),
                   const SizedBox(height: 20),
                   const Text(
-                    'Geolocalização',
+                    'Geolocalizacao',
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 18,
@@ -135,7 +122,16 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                     ),
                     child: InkWell(
                       borderRadius: BorderRadius.circular(24),
-                      onTap: () => _showMessage('Capture a localização aqui.'),
+                      onTap: () async {
+                        final error = await _formViewModel.searchLocation();
+                        if (!mounted) return;
+                        if (error != null) {
+                          _showMessage(error);
+                          return;
+                        }
+                        _showMessage('Localizacao capturada com sucesso.');
+                      },
+
                       child: const Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
@@ -146,7 +142,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            'CAPTURAR LOCALIZAÇÃO (GPS)',
+                            'CAPTURAR LOCALIZACAO (GPS)',
                             style: TextStyle(
                               color: AppColors.tertiary,
                               fontWeight: FontWeight.w700,
@@ -158,8 +154,8 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                     ),
                   ),
                   const SizedBox(height: 12),
-                  Text(
-                    'A tarefa será ativada automaticamente quando você\nentrar no perímetro.',
+                  const Text(
+                    'A tarefa sera ativada automaticamente quando voce\nentrar no perimetro.',
                     style: TextStyle(
                       color: AppColors.textSecondary,
                       fontSize: 13,
@@ -168,11 +164,11 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                   ),
                   const SizedBox(height: 18),
                   TextField(
-                    controller: _controller.notesController,
+                    controller: _formViewModel.locationController,
                     minLines: 2,
                     maxLines: 3,
                     decoration: InputDecoration(
-                      hintText: 'Observações (opcional)',
+                      hintText: 'Nome do local (ex: Casa, Trabalho, Academia)',
                       hintStyle: const TextStyle(
                         color: AppColors.textSecondary,
                       ),
@@ -189,18 +185,28 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        final error = _controller.validate();
+                        final error = _formViewModel.validate();
                         if (error != null) {
                           _showMessage(error);
                           return;
                         }
 
-                        final existingTask =
-                            ModalRoute.of(context)?.settings.arguments as Task?;
-                        final task = _controller.buildTask(
+                        if (args == null) {
+                          _showMessage('Nao foi possivel salvar a tarefa.');
+                          return;
+                        }
+
+                        final Task task = _formViewModel.buildTask(
                           existingTask: existingTask,
                         );
-                        Navigator.pop(context, task);
+
+                        if (args.isEditing) {
+                          args.tasksViewModel.updateTask(args.taskIndex!, task);
+                        } else {
+                          args.tasksViewModel.addTask(task);
+                        }
+
+                        Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),

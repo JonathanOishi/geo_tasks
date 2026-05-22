@@ -24,7 +24,7 @@ Future<TimeOfDay?> pickTaskTime({
   return showTimePicker(
     context: context,
     initialTime: selectedTime ?? TimeOfDay.now(),
-    helpText: 'Selecione o horário',
+    helpText: 'Selecione o horario',
     cancelText: 'Cancelar',
     confirmText: 'OK',
   );

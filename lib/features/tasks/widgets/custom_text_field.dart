@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:geo_tasks/core/theme/app_colors.dart';
+import 'package:geo_tasks/app/theme/app_colors.dart';
 
 class CustomTextField extends StatelessWidget {
   const CustomTextField({

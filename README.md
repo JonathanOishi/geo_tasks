@@ -3,9 +3,13 @@
 Aplicativo Flutter para gerenciamento de tarefas com suporte a geolocalizacao.
 
 <p align="center">
-  <img src="https://kommodo.ai/i/K7wcnr3ejhZwYw2NViNQ" 
-       alt="Geo Tasks"
-       width="60%"/>
+  <a href="https://ibb.co/NnVvL6ZW">
+    <img 
+      src="https://i.ibb.co/k6H7hgQq/Gemini-Generated-Image-32m21g32m21g32m2.png"
+      alt="Geo Tasks"
+      width="60%"
+    />
+  </a>
 </p>
 
 ## Tecnologias

@@ -2,6 +2,10 @@
 
 Aplicativo Flutter para gerenciamento de tarefas com suporte a geolocalizacao.
 
+![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
+![Provider](https://img.shields.io/badge/State%20Management-Provider-green)
+![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey)
+
 <p align="center">
   <a href="https://github.com/JonathanOishi">
     <img 
@@ -47,13 +51,19 @@ O app usa Provider + ChangeNotifier + notifyListeners().
 
 ## Como executar
 
-1. Instale as dependencias:
+Clone o repositório:
+
+```bash
+git clone https://github.com/JonathanOishi/geo_tasks.git
+```
+
+Instale as dependências:
 
 ```bash
 flutter pub get
 ```
 
-2. Rode o projeto:
+Execute o projeto:
 
 ```bash
 flutter run

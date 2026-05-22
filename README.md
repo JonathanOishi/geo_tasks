@@ -3,10 +3,10 @@
 Aplicativo Flutter para gerenciamento de tarefas com suporte a geolocalizacao.
 
 <p align="center">
-  <a href="https://ibb.co/LzY6BtLj">
+  <a href="https://imgbb.com/">
     <img 
-      src="https://i.ibb.co/3y4WVND6/GEO-TASK-APP.jpg"
-      alt="Geo Task App"
+      src="https://i.ibb.co/99Spk134/Gemini-Generated-Image-yrfigeyrfigeyrfi-removebg-preview.png"
+      alt="Geo Tasks"
       width="60%"
     />
   </a>

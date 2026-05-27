@@ -7,6 +7,8 @@ class CustomTextField extends StatelessWidget {
     this.label,
     required this.hintText,
     this.icon,
+    this.prefixIcon,
+    this.suffixIcon,
     this.controller,
     this.readOnly = false,
     this.onTap,
@@ -18,6 +20,8 @@ class CustomTextField extends StatelessWidget {
   final TextEditingController? controller;
   final bool readOnly;
   final VoidCallback? onTap;
+  final IconData? prefixIcon;
+  final IconData? suffixIcon;
 
   @override
   Widget build(BuildContext context) {
@@ -48,11 +52,17 @@ class CustomTextField extends StatelessWidget {
               horizontal: 18,
               vertical: 16,
             ),
-            suffixIcon: icon == null
+            prefixIcon: prefixIcon == null
+                ? null
+                : Padding(
+                    padding: const EdgeInsets.only(left: 14, right: 8),
+                    child: Icon(prefixIcon, color: AppColors.textSecondary),
+                  ),
+            suffixIcon: suffixIcon == null
                 ? null
                 : Padding(
                     padding: const EdgeInsets.only(right: 14),
-                    child: Icon(icon, color: AppColors.textSecondary),
+                    child: Icon(suffixIcon, color: AppColors.textSecondary),
                   ),
             suffixIconConstraints: const BoxConstraints(minWidth: 40),
             enabledBorder: OutlineInputBorder(

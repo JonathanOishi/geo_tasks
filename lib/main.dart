@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geo_tasks/app/router/app_routes.dart';
 import 'package:geo_tasks/app/theme/app_theme.dart';
-import 'package:geo_tasks/features/tasks/views/home_page.dart';
 import 'package:provider/provider.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/tasks_view_model.dart';
 
@@ -18,7 +17,7 @@ class GeoTasksApp extends StatelessWidget {
       create: (_) => TasksViewModel(),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        home: const HomePage(),
+        initialRoute: AppRoutes.login,
         theme: AppTheme.light,
         routes: AppRoutes.routes,
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:geo_tasks/app/router/app_routes.dart';
 import 'package:geo_tasks/app/theme/app_colors.dart';
 import 'package:geo_tasks/features/tasks/widgets/custom_text_field.dart';
 
@@ -22,7 +23,6 @@ class LoginPage extends StatelessWidget {
                     clipBehavior: Clip.antiAlias,
                     child: SizedBox(
                       width: double.infinity,
-
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
@@ -35,11 +35,18 @@ class LoginPage extends StatelessWidget {
                             ),
                             height: 185,
                           ),
-                          SizedBox(height: 16),
+
                           Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Column(
                               children: [
+                                Text(
+                                  'Bem-vindo de volta!',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 CustomTextField(
                                   label: 'E-mail',
                                   hintText: 'example@example.com',
@@ -62,7 +69,11 @@ class LoginPage extends StatelessWidget {
                                   ],
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(
+                                      context,
+                                    ).pushReplacementNamed(AppRoutes.home);
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     minimumSize: Size(double.infinity, 50),
                                     shape: RoundedRectangleBorder(
@@ -80,7 +91,11 @@ class LoginPage extends StatelessWidget {
                                   children: [
                                     Text('Não tem uma conta?'),
                                     TextButton(
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        Navigator.of(
+                                          context,
+                                        ).pushNamed(AppRoutes.register);
+                                      },
                                       child: Text('Registrar-se'),
                                     ),
                                   ],

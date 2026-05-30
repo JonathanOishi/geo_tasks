@@ -12,7 +12,20 @@
           "package_name": "com.example.geo_tasks"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "600947018057-vj0e8ch2lbbv419cuieeuqc8dt8j4988.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.geo_tasks",
+            "certificate_hash": "61a591dd1b01f93fc50c7dfc193dc0647d582af4"
+          }
+        },
+        {
+          "client_id": "600947018057-0pibdd5tfa12llkkq6j7jk5bhso90mjf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBTR6zkLVWgXuNHa2rhQSIG06XMzNTovTY"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "600947018057-0pibdd5tfa12llkkq6j7jk5bhso90mjf.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "600947018057-gv5cm4iv1pip3poid2robhjger2s03r9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.geoTasks"
+              }
+            }
+          ]
         }
       }
     }

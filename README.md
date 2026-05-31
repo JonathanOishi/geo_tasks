@@ -69,6 +69,15 @@ Execute o projeto:
 flutter run
 ```
 
+Se precisar inicializar o Firebase, passe as chaves no build em vez de mantê-las no repositório:
+
+```bash
+flutter run \
+  --dart-define=FIREBASE_API_KEY_ANDROID=... \
+  --dart-define=FIREBASE_API_KEY_IOS=... \
+  --dart-define=FIREBASE_API_KEY_WEB=...
+```
+
 ## Observacao
 
 Atualmente os dados das tarefas ficam em memoria (sem persistencia local). Ao fechar o app, a lista e reiniciada.

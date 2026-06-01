@@ -69,13 +69,27 @@ Execute o projeto:
 flutter run
 ```
 
-Se precisar inicializar o Firebase, passe as chaves no build em vez de mantê-las no repositório:
+Configure as chaves do Firebase em um arquivo `.env` local (não versionado):
+
+```env
+FIREBASE_API_KEY_ANDROID=...
+FIREBASE_API_KEY_IOS=...
+```
+
+Crie o seu arquivo local a partir do exemplo:
+
+```powershell
+Copy-Item .env.example .env
+```
+
+```bat
+copy .env.example .env
+```
+
+Depois, execute normalmente:
 
 ```bash
-flutter run \
-  --dart-define=FIREBASE_API_KEY_ANDROID=... \
-  --dart-define=FIREBASE_API_KEY_IOS=... \
-  --dart-define=FIREBASE_API_KEY_WEB=...
+flutter run
 ```
 
 ## Observacao

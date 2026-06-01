@@ -4,10 +4,12 @@ import 'package:geo_tasks/app/theme/app_theme.dart';
 import 'package:provider/provider.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/tasks_view_model.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'features/tasks/services/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: '.env');
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );

@@ -1,21 +1,14 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class DefaultFirebaseOptions {
-  static const String _androidApiKey = String.fromEnvironment(
-    'FIREBASE_API_KEY_ANDROID',
-  );
-  static const String _iosApiKey = String.fromEnvironment(
-    'FIREBASE_API_KEY_IOS',
-  );
-  static const String _webApiKey = String.fromEnvironment(
-    'FIREBASE_API_KEY_WEB',
-  );
-
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'Este app foi configurado apenas para Android e iOS.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -44,30 +37,30 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: _androidApiKey,
+  static String _requireEnv(String keyName) {
+    final value = dotenv.env[keyName]?.trim() ?? '';
+    if (value.isEmpty) {
+      throw StateError(
+        'Firebase API key ausente: configure $keyName no arquivo .env.',
+      );
+    }
+    return value;
+  }
+
+  static FirebaseOptions get android => FirebaseOptions(
+    apiKey: _requireEnv('FIREBASE_API_KEY_ANDROID'),
     appId: '1:600947018057:android:29a46ce9bec7a7e67c3298',
     messagingSenderId: '600947018057',
     projectId: 'geotasks-1f310',
     storageBucket: 'geotasks-1f310.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: _iosApiKey,
+  static FirebaseOptions get ios => FirebaseOptions(
+    apiKey: _requireEnv('FIREBASE_API_KEY_IOS'),
     appId: '1:600947018057:ios:a6488f2d8196886e7c3298',
     messagingSenderId: '600947018057',
     projectId: 'geotasks-1f310',
     storageBucket: 'geotasks-1f310.firebasestorage.app',
     iosBundleId: 'com.example.geoTasks',
-  );
-
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: _webApiKey,
-    appId: '1:600947018057:web:7652970d6b8e1f0a7c3298',
-    messagingSenderId: '600947018057',
-    projectId: 'geotasks-1f310',
-    authDomain: 'geotasks-1f310.firebaseapp.com',
-    storageBucket: 'geotasks-1f310.firebasestorage.app',
-    measurementId: 'G-E9Q9PRQN7R',
   );
 }

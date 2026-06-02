@@ -12,6 +12,8 @@ class CustomTextField extends StatelessWidget {
     this.controller,
     this.readOnly = false,
     this.onTap,
+    this.obscureText = false,
+    this.keyboardType,
   });
 
   final String? label;
@@ -22,6 +24,8 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
+  final bool obscureText;
+  final TextInputType? keyboardType;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +44,7 @@ class CustomTextField extends StatelessWidget {
           const SizedBox(height: 8),
         ],
         TextField(
+          keyboardType: keyboardType,
           controller: controller,
           readOnly: readOnly,
           onTap: onTap,

@@ -1,13 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:geo_tasks/app/router/app_routes.dart';
 import 'package:geo_tasks/app/theme/app_colors.dart';
+import 'package:geo_tasks/features/tasks/viewmodels/autentication._view_model.dart';
 import 'package:geo_tasks/features/tasks/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final authVm = context.watch<AuthenticationViewModel>();
+
     return Scaffold(
       body: SafeArea(
         child: Center(
@@ -27,7 +46,7 @@ class LoginPage extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Container(
-                            decoration: BoxDecoration(
+                            decoration: const BoxDecoration(
                               image: DecorationImage(
                                 image: AssetImage('assets/logo_geo_tasks.png'),
                                 fit: BoxFit.cover,
@@ -35,12 +54,11 @@ class LoginPage extends StatelessWidget {
                             ),
                             height: 185,
                           ),
-
                           Padding(
                             padding: const EdgeInsets.all(15.0),
                             child: Column(
                               children: [
-                                Text(
+                                const Text(
                                   'Bem-vindo de volta!',
                                   style: TextStyle(
                                     fontSize: 24,
@@ -51,63 +69,110 @@ class LoginPage extends StatelessWidget {
                                   label: 'E-mail',
                                   hintText: 'example@example.com',
                                   prefixIcon: Icons.email,
+                                  controller: _emailController,
+                                  keyboardType: TextInputType.emailAddress,
                                 ),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 CustomTextField(
                                   label: 'Senha',
                                   hintText: 'Digite sua senha',
                                   prefixIcon: Icons.lock,
                                   suffixIcon: Icons.visibility_off,
+                                  controller: _passwordController,
+                                  obscureText: true,
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
                                     TextButton(
                                       onPressed: () {},
-                                      child: Text('Esqueci minha senha'),
+                                      child: const Text('Esqueci minha senha'),
                                     ),
                                   ],
                                 ),
                                 ElevatedButton(
-                                  onPressed: () {
-                                    Navigator.of(
-                                      context,
-                                    ).pushReplacementNamed(AppRoutes.home);
-                                  },
+                                  onPressed: authVm.isLoading
+                                      ? null
+                                      : () async {
+                                          final navigator = Navigator.of(
+                                            context,
+                                          );
+                                          final messenger =
+                                              ScaffoldMessenger.of(context);
+
+                                          final ok = await authVm.login(
+                                            email: _emailController.text,
+                                            password: _passwordController.text,
+                                          );
+
+                                          if (ok) {
+                                            navigator.pushReplacementNamed(
+                                              AppRoutes.home,
+                                            );
+                                          } else {
+                                            messenger.showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  authVm.errorMessage ??
+                                                      'Falha no login.',
+                                                ),
+                                              ),
+                                            );
+                                          }
+                                        },
                                   style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(double.infinity, 50),
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      50,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                     ),
                                   ),
-                                  child: Text(
-                                    'Entrar',
-                                    style: TextStyle(fontSize: 18),
-                                  ),
+                                  child: authVm.isLoading
+                                      ? const SizedBox(
+                                          height: 20,
+                                          width: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Text(
+                                          'Entrar',
+                                          style: TextStyle(fontSize: 18),
+                                        ),
                                 ),
-                                SizedBox(height: 5),
+                                if (authVm.errorMessage != null) ...[
+                                  const SizedBox(height: 8),
+                                  Text(
+                                    authVm.errorMessage!,
+                                    style: const TextStyle(color: Colors.red),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ],
+                                const SizedBox(height: 5),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('Não tem uma conta?'),
+                                    const Text('Não tem uma conta?'),
                                     TextButton(
                                       onPressed: () {
                                         Navigator.of(
                                           context,
                                         ).pushNamed(AppRoutes.register);
                                       },
-                                      child: Text('Registrar-se'),
+                                      child: const Text('Registrar-se'),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 Row(
                                   children: [
                                     Expanded(
                                       child: Divider(color: AppColors.primary),
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
+                                    const Padding(
+                                      padding: EdgeInsets.symmetric(
                                         horizontal: 8.0,
                                       ),
                                       child: Text('Ou continue com'),
@@ -117,7 +182,7 @@ class LoginPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 16),
+                                const SizedBox(height: 16),
                                 ElevatedButton.icon(
                                   onPressed: () {},
                                   icon: Image.asset(
@@ -148,7 +213,10 @@ class LoginPage extends StatelessWidget {
                                     ),
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    minimumSize: Size(double.infinity, 50),
+                                    minimumSize: const Size(
+                                      double.infinity,
+                                      50,
+                                    ),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                     ),

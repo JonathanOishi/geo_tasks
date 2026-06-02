@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:geo_tasks/app/router/app_routes.dart';
 import 'package:geo_tasks/features/tasks/models/task.dart';
 import 'package:geo_tasks/features/tasks/services/location_service.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/tasks_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/add_edit_task_args.dart';
+import 'package:geo_tasks/app/router/app_routes.dart';
 import 'package:geo_tasks/features/tasks/widgets/task_card.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, required this.onProfileTap});
+
+  final VoidCallback onProfileTap;
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -125,12 +127,15 @@ class _HomePageState extends State<HomePage> {
                   width: 2,
                 ),
               ),
-              child: const CircleAvatar(
-                backgroundColor: Color(0xFFDAF5F1),
-                child: Icon(
-                  Icons.person,
-                  color: Color(0xFF0B7267),
-                  size: 32,
+              child: GestureDetector(
+                onTap: widget.onProfileTap,
+                child: const CircleAvatar(
+                  backgroundColor: Color(0xFFDAF5F1),
+                  child: Icon(
+                    Icons.person,
+                    color: Color(0xFF0B7267),
+                    size: 32,
+                  ),
                 ),
               ),
             ),

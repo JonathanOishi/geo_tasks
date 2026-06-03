@@ -43,6 +43,14 @@ class Task {
     );
   }
 
+  String get dateLabel =>
+      '${date.day.toString().padLeft(2, '0')}/${date.month.toString().padLeft(2, '0')}';
+
+  String get timeLabel =>
+      '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+
+  String get statusLabel => isCompleted ? 'Concluida' : 'Pendente';
+
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'uid': uid,

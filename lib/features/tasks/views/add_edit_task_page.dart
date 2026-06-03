@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:geo_tasks/app/theme/app_colors.dart';
 import 'package:geo_tasks/features/tasks/models/task.dart';
@@ -184,7 +186,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         final error = _formViewModel.validate();
                         if (error != null) {
                           _showMessage(error);
@@ -201,11 +203,15 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                         );
 
                         if (args.isEditing) {
-                          args.tasksViewModel.updateTask(args.taskIndex!, task);
+                          await args.tasksViewModel.updateTask(
+                            args.taskIndex!,
+                            task,
+                          );
                         } else {
-                          args.tasksViewModel.addTask(task);
+                          await args.tasksViewModel.addTask(task);
                         }
 
+                        if (!mounted) return;
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(

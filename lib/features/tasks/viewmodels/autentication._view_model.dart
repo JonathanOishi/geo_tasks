@@ -1,23 +1,40 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:async';
+
+import 'package:cloud_firestore/cloud_firestore.dart' as cloud_firestore;
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
+import 'package:geo_tasks/features/tasks/models/user.dart';
+import 'package:geo_tasks/features/tasks/repositories/user_repository.dart';
 
 class AuthenticationViewModel extends ChangeNotifier {
-  AuthenticationViewModel({FirebaseAuth? auth})
-    : _auth = auth ?? FirebaseAuth.instance {
+  AuthenticationViewModel({
+    firebase_auth.FirebaseAuth? auth,
+    UserRepository? userRepository,
+  }) : _auth = auth ?? firebase_auth.FirebaseAuth.instance,
+       _userRepository = userRepository ?? UserRepository() {
     _user = _auth.currentUser;
+    _currentUserData = _mapFirebaseUserToAppUser(_user);
+    _listenToUserDocument(_user);
     _auth.authStateChanges().listen((user) {
       _user = user;
+      _currentUserData = _mapFirebaseUserToAppUser(user);
+      _listenToUserDocument(user);
       notifyListeners();
     });
   }
 
-  final FirebaseAuth _auth;
+  final firebase_auth.FirebaseAuth _auth;
+  final UserRepository _userRepository;
+  StreamSubscription<cloud_firestore.DocumentSnapshot<Map<String, dynamic>>>?
+  _userDocSubscription;
 
-  User? _user;
+  firebase_auth.User? _user;
+  User? _currentUserData;
   bool _isLoading = false;
   String? _errorMessage;
 
-  User? get user => _user;
+  firebase_auth.User? get user => _user;
+  User? get currentUserData => _currentUserData;
   bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   bool get isLoggedIn => _user != null;
@@ -31,8 +48,9 @@ class AuthenticationViewModel extends ChangeNotifier {
         email: email.trim(),
         password: password.trim(),
       );
+      _syncCurrentUserData();
       return true;
-    } on FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       _errorMessage = _mapAuthError(e.code);
       notifyListeners();
       return false;
@@ -81,9 +99,11 @@ class AuthenticationViewModel extends ChangeNotifier {
 
       await credential.user?.updateDisplayName(trimmedName);
       await credential.user?.reload();
+      await _ensureUserDocument(credential.user);
+      _syncCurrentUserData();
 
       return true;
-    } on FirebaseAuthException catch (e) {
+    } on firebase_auth.FirebaseAuthException catch (e) {
       _errorMessage = _mapAuthError(e.code);
       notifyListeners();
       return false;
@@ -98,6 +118,31 @@ class AuthenticationViewModel extends ChangeNotifier {
 
     try {
       await _auth.signOut();
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> updateProfileAvatar(String avatarBase64) async {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    _setLoading(true);
+    _clearError();
+
+    try {
+      await _userRepository.updateProfileAvatar(
+        userId: user.uid,
+        avatarBase64: avatarBase64,
+      );
+      _currentUserData = (_currentUserData ?? _mapFirebaseUserToAppUser(user))
+          ?.copyWith(avatarBase64: avatarBase64);
+      notifyListeners();
+      return true;
+    } on cloud_firestore.FirebaseException catch (e) {
+      _errorMessage = e.message ?? 'Nao foi possivel salvar a foto.';
+      notifyListeners();
+      return false;
     } finally {
       _setLoading(false);
     }
@@ -135,5 +180,62 @@ class AuthenticationViewModel extends ChangeNotifier {
 
   void _clearError() {
     _errorMessage = null;
+  }
+
+  void _syncCurrentUserData() {
+    _user = _auth.currentUser;
+    _currentUserData = _mapFirebaseUserToAppUser(_user);
+    notifyListeners();
+  }
+
+  User? _mapFirebaseUserToAppUser(firebase_auth.User? firebaseUser) {
+    if (firebaseUser == null) return null;
+
+    return User.fromAuth(
+      id: firebaseUser.uid,
+      name: firebaseUser.displayName,
+      email: firebaseUser.email,
+      avatarBase64: _currentUserData?.avatarBase64,
+    );
+  }
+
+  Future<void> _ensureUserDocument(firebase_auth.User? user) async {
+    if (user == null) return;
+
+    await _userRepository.ensureUserDocument(
+      userId: user.uid,
+      name: user.displayName ?? '',
+      email: user.email ?? '',
+    );
+  }
+
+  void _listenToUserDocument(firebase_auth.User? user) {
+    _userDocSubscription?.cancel();
+    _userDocSubscription = null;
+
+    if (user == null) {
+      _currentUserData = null;
+      notifyListeners();
+      return;
+    }
+
+    _userDocSubscription = _userRepository.watchUser(user.uid).listen((
+      snapshot,
+    ) {
+      final data = snapshot.data();
+      _currentUserData = User.fromFirestore(
+        id: user.uid,
+        data: data,
+        fallbackName: user.displayName,
+        fallbackEmail: user.email,
+      );
+      notifyListeners();
+    });
+  }
+
+  @override
+  void dispose() {
+    _userDocSubscription?.cancel();
+    super.dispose();
   }
 }

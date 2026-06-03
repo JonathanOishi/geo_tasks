@@ -14,28 +14,34 @@ class CustomNavBar extends StatefulWidget {
 
 class _CustomNavBarState extends State<CustomNavBar> {
   int _currentIndex = 0;
+  late final List<Widget> _pages;
+
+  static const List<_NavTabData> _tabs = [
+    _NavTabData(icon: Icons.task_alt_rounded, label: 'Tasks'),
+    _NavTabData(icon: Icons.dashboard_rounded, label: 'Dashboard'),
+    _NavTabData(icon: Icons.person_outline_rounded, label: 'Profile'),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _pages = const [
+      HomePage(),
+      DashboardPage(),
+      ProfilePage(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
-    final pages = <Widget>[
-      HomePage(
-        onProfileTap: () {
-          setState(() {
-            _currentIndex = 2;
-          });
-        },
-      ),
-      const DashboardPage(),
-      const ProfilePage(),
-    ];
-
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
-        children: pages,
+        children: _pages,
       ),
       bottomNavigationBar: Padding(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 40),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(34),
           child: BackdropFilter(
@@ -43,46 +49,31 @@ class _CustomNavBarState extends State<CustomNavBar> {
             child: Container(
               height: 78,
               decoration: BoxDecoration(
-                color: AppColors.surfaceLowest.withValues(alpha: 0.78),
+                color: AppColors.surfaceLowest.withValues(alpha: 0.24),
                 borderRadius: BorderRadius.circular(34),
                 border: Border.all(
-                  color: AppColors.primary.withValues(alpha: 0.65),
+                  color: AppColors.primary.withValues(alpha: 0.35),
                 ),
                 boxShadow: [
                   BoxShadow(
-                    color: AppColors.textPrimary.withValues(alpha: 0.08),
+                    color: AppColors.textPrimary.withValues(alpha: 0.05),
                     blurRadius: 34,
                     offset: const Offset(0, 8),
                   ),
                 ],
               ),
               child: Row(
-                children: [
-                  Expanded(
+                children: List.generate(_tabs.length, (index) {
+                  final tab = _tabs[index];
+                  return Expanded(
                     child: _NavItem(
-                      icon: Icons.task_alt_rounded,
-                      label: 'Tasks',
-                      isSelected: _currentIndex == 0,
-                      onTap: () => _selectTab(0),
+                      icon: tab.icon,
+                      label: tab.label,
+                      isSelected: _currentIndex == index,
+                      onTap: () => _selectTab(index),
                     ),
-                  ),
-                  Expanded(
-                    child: _NavItem(
-                      icon: Icons.dashboard_rounded,
-                      label: 'Dashboard',
-                      isSelected: _currentIndex == 1,
-                      onTap: () => _selectTab(1),
-                    ),
-                  ),
-                  Expanded(
-                    child: _NavItem(
-                      icon: Icons.person_outline_rounded,
-                      label: 'Profile',
-                      isSelected: _currentIndex == 2,
-                      onTap: () => _selectTab(2),
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
             ),
           ),
@@ -92,10 +83,18 @@ class _CustomNavBarState extends State<CustomNavBar> {
   }
 
   void _selectTab(int index) {
+    if (_currentIndex == index) return;
     setState(() {
       _currentIndex = index;
     });
   }
+}
+
+class _NavTabData {
+  const _NavTabData({required this.icon, required this.label});
+
+  final IconData icon;
+  final String label;
 }
 
 class _NavItem extends StatelessWidget {

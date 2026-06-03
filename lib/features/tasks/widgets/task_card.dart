@@ -29,7 +29,7 @@ class TaskCard extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(8),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
       child: Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(28),
@@ -72,7 +72,7 @@ class TaskCard extends StatelessWidget {
               ],
             ),
             child: Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 14),
               decoration: const BoxDecoration(
                 color: AppColors.surfaceLowest,
                 border: Border(
@@ -93,6 +93,7 @@ class TaskCard extends StatelessWidget {
                           title,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.titleLarge?.copyWith(
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -100,26 +101,33 @@ class TaskCard extends StatelessWidget {
                       IconButton(
                         tooltip: 'Usar localizacao atual',
                         onPressed: onSetCurrentLocation,
+                        constraints: const BoxConstraints.tightFor(
+                          width: 34,
+                          height: 34,
+                        ),
+                        padding: EdgeInsets.zero,
                         icon: const Icon(
                           Icons.my_location_outlined,
                           color: AppColors.primary,
+                          size: 20,
                         ),
                       ),
                       const Icon(
                         Icons.chevron_right,
+                        size: 20,
                         color: AppColors.textSecondary,
                       ),
                     ],
                   ),
-                  const SizedBox(height: 8),
+
                   Row(
                     children: [
                       const Icon(
                         Icons.calendar_today_outlined,
-                        size: 18,
+                        size: 16,
                         color: AppColors.textSecondary,
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: 6),
                       Text(
                         time,
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -128,20 +136,22 @@ class TaskCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
+
                   Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: 6,
+                    runSpacing: 6,
                     children: [
                       if (location != null && location!.trim().isNotEmpty)
                         Chip(
+                          visualDensity: VisualDensity.compact,
                           avatar: const Icon(
                             Icons.location_on_outlined,
-                            size: 18,
+                            size: 16,
                           ),
                           label: Text(location!),
                         ),
                       Chip(
+                        visualDensity: VisualDensity.compact,
                         backgroundColor: isCompleted
                             ? AppColors.success.withValues(alpha: 0.15)
                             : AppColors.warning.withValues(alpha: 0.15),

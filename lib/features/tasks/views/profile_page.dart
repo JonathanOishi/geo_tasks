@@ -78,15 +78,18 @@ class _ProfilePageState extends State<ProfilePage> {
                   width: 44,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: Colors.black12,
+                    color: AppColors.shadowLight,
                     borderRadius: BorderRadius.circular(100),
                   ),
                 ),
                 const SizedBox(height: 18),
                 ListTile(
                   leading: const CircleAvatar(
-                    backgroundColor: Color(0xFFE8F7F5),
-                    child: Icon(Icons.photo_camera, color: Color(0xFF0B7267)),
+                    backgroundColor: AppColors.outlineSoft,
+                    child: Icon(
+                      Icons.photo_camera,
+                      color: AppColors.avatarIcon,
+                    ),
                   ),
                   title: const Text('Tirar foto'),
                   onTap: () async {
@@ -100,8 +103,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 ListTile(
                   leading: const CircleAvatar(
-                    backgroundColor: Color(0xFFE8F7F5),
-                    child: Icon(Icons.photo_library, color: Color(0xFF0B7267)),
+                    backgroundColor: AppColors.outlineSoft,
+                    child: Icon(
+                      Icons.photo_library,
+                      color: AppColors.avatarIcon,
+                    ),
                   ),
                   title: const Text('Abrir galeria'),
                   onTap: () async {
@@ -133,7 +139,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.appBarBackground,
         elevation: 0,
         scrolledUnderElevation: 0,
         toolbarHeight: 80,
@@ -152,7 +158,7 @@ class _ProfilePageState extends State<ProfilePage> {
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0B7267),
+                color: AppColors.appBarTitle,
                 height: 1.1,
               ),
             ),
@@ -164,7 +170,7 @@ class _ProfilePageState extends State<ProfilePage> {
           child: Divider(
             height: 1,
             thickness: 1,
-            color: Color(0xFFE5E8E7),
+            color: AppColors.appBarDivider,
           ),
         ),
       ),
@@ -203,7 +209,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             userEmail,
                             style: TextStyle(
                               fontSize: 16,
-                              color: Colors.grey,
+                              color: AppColors.textSecondary,
                             ),
                           ),
                         ],

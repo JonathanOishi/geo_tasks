@@ -66,7 +66,7 @@ class DashboardHistoryTaskCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       elevation: 0,
-      color: const Color(0xFFF0F6F5),
+      color: AppColors.surfaceAlt,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -83,11 +83,11 @@ class DashboardHistoryTaskCard extends StatelessWidget {
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
                       decoration: TextDecoration.lineThrough,
-                      color: Color(0xFF374B49),
+                      color: AppColors.textOnMuted,
                     ),
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: Color(0xFFB8C4C2)),
+                const Icon(Icons.chevron_right, color: AppColors.textDisabled),
               ],
             ),
             const SizedBox(height: 10),
@@ -96,14 +96,14 @@ class DashboardHistoryTaskCard extends StatelessWidget {
                 const Icon(
                   Icons.calendar_today_outlined,
                   size: 18,
-                  color: Color(0xFF7E8D8B),
+                  color: AppColors.textCalendar,
                 ),
                 const SizedBox(width: 8),
                 Text(
                   subtitle,
                   style: const TextStyle(
                     fontSize: 14,
-                    color: Color(0xFF7E8D8B),
+                    color: AppColors.textCalendar,
                   ),
                 ),
               ],
@@ -141,7 +141,7 @@ class DashboardEmptyHistory extends StatelessWidget {
       child: Center(
         child: Text(
           'Nenhuma tarefa concluida ainda.',
-          style: TextStyle(color: Colors.black54),
+          style: TextStyle(color: AppColors.textSecondary),
         ),
       ),
     );

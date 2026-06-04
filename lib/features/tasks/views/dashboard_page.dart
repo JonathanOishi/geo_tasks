@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geo_tasks/app/theme/app_colors.dart';
+import 'package:geo_tasks/features/tasks/viewmodels/autentication._view_model.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/tasks_view_model.dart';
+import 'package:geo_tasks/features/tasks/widgets/profile_app_bar_avatar.dart';
 import 'package:geo_tasks/features/tasks/widgets/dashboard_widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -10,11 +12,13 @@ class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tasksViewModel = context.watch<TasksViewModel>();
+    final authVm = context.watch<AuthenticationViewModel>();
+    final user = authVm.currentUserData;
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.appBarBackground,
         elevation: 0,
         scrolledUnderElevation: 0,
         toolbarHeight: 80,
@@ -33,7 +37,7 @@ class DashboardPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0B7267),
+                color: AppColors.appBarTitle,
                 height: 1.1,
               ),
             ),
@@ -42,25 +46,7 @@ class DashboardPage extends StatelessWidget {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF17A89B),
-                  width: 2,
-                ),
-              ),
-              child: const CircleAvatar(
-                backgroundColor: Color(0xFFDAF5F1),
-                child: Icon(
-                  Icons.person,
-                  color: Color(0xFF0B7267),
-                  size: 32,
-                ),
-              ),
-            ),
+            child: ProfileAppBarAvatar(imageBase64: user?.avatarBase64),
           ),
         ],
         bottom: const PreferredSize(
@@ -68,7 +54,7 @@ class DashboardPage extends StatelessWidget {
           child: Divider(
             height: 1,
             thickness: 1,
-            color: Color(0xFFE5E8E7),
+            color: AppColors.appBarDivider,
           ),
         ),
       ),

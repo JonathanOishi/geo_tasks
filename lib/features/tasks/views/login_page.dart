@@ -15,6 +15,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscurePassword = true;
 
   @override
   void dispose() {
@@ -77,9 +78,21 @@ class _LoginPageState extends State<LoginPage> {
                                   label: 'Senha',
                                   hintText: 'Digite sua senha',
                                   prefixIcon: Icons.lock,
-                                  suffixIcon: Icons.visibility_off,
                                   controller: _passwordController,
-                                  obscureText: true,
+                                  obscureText: _obscurePassword,
+                                  suffixIconWidget: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
                                 ),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
@@ -146,7 +159,9 @@ class _LoginPageState extends State<LoginPage> {
                                   const SizedBox(height: 8),
                                   Text(
                                     authVm.errorMessage!,
-                                    style: const TextStyle(color: Colors.red),
+                                    style: const TextStyle(
+                                      color: AppColors.error,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],
@@ -194,10 +209,10 @@ class _LoginPageState extends State<LoginPage> {
                                     shaderCallback: (bounds) {
                                       return const LinearGradient(
                                         colors: [
-                                          Color(0xFF4285F4),
-                                          Color(0xFFEA4335),
-                                          Color(0xFFFBBC05),
-                                          Color(0xFF34A853),
+                                          AppColors.googleBlue,
+                                          AppColors.googleRed,
+                                          AppColors.googleYellow,
+                                          AppColors.googleGreen,
                                         ],
                                         begin: Alignment.centerLeft,
                                         end: Alignment.centerRight,
@@ -208,7 +223,7 @@ class _LoginPageState extends State<LoginPage> {
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.w600,
-                                        color: Colors.white,
+                                        color: AppColors.onPrimary,
                                       ),
                                     ),
                                   ),
@@ -220,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(50),
                                     ),
-                                    backgroundColor: Colors.white,
+                                    backgroundColor: AppColors.surfaceLowest,
                                   ),
                                 ),
                               ],

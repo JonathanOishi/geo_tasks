@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:geo_tasks/app/theme/app_colors.dart';
 
 class ProfileAvatar extends StatelessWidget {
   const ProfileAvatar({
@@ -37,7 +38,7 @@ class ProfileAvatar extends StatelessWidget {
             height: outerSize,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF1AA79A).withValues(alpha: 0.22),
+              color: AppColors.avatarOuter.withValues(alpha: 0.22),
             ),
           ),
           Container(
@@ -45,7 +46,7 @@ class ProfileAvatar extends StatelessWidget {
             height: innerSize,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFF355E5E),
+              color: AppColors.avatarInner,
             ),
           ),
           Container(
@@ -53,7 +54,7 @@ class ProfileAvatar extends StatelessWidget {
             height: imageSize,
             decoration: const BoxDecoration(
               shape: BoxShape.circle,
-              color: Color(0xFFE6EEEE),
+              color: AppColors.avatarSurface,
             ),
             child: ClipOval(
               child: imageBytes != null
@@ -73,13 +74,13 @@ class ProfileAvatar extends StatelessWidget {
                       errorBuilder: (_, _, _) => const Icon(
                         Icons.person,
                         size: 44,
-                        color: Color(0xFF0B7267),
+                        color: AppColors.avatarIcon,
                       ),
                     )
                   : const Icon(
                       Icons.person,
                       size: 44,
-                      color: Color(0xFF0B7267),
+                      color: AppColors.avatarIcon,
                     ),
             ),
           ),
@@ -87,7 +88,7 @@ class ProfileAvatar extends StatelessWidget {
             right: 0,
             bottom: 8,
             child: Material(
-              color: const Color(0xFF0B7267),
+              color: AppColors.avatarEditBackground,
               shape: const CircleBorder(),
               elevation: 4,
               child: InkWell(
@@ -98,7 +99,7 @@ class ProfileAvatar extends StatelessWidget {
                   height: 48,
                   child: Icon(
                     Icons.edit,
-                    color: Colors.white,
+                    color: AppColors.avatarEditIcon,
                     size: 24,
                   ),
                 ),

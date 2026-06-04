@@ -42,26 +42,20 @@ class TasksViewModel extends ChangeNotifier {
     await _repository!.addTask(task);
   }
 
-  Future<void> updateTask(int index, Task task) async {
+  Future<void> updateTask(Task task) async {
     if (_repository == null) return;
-    if (!_isValidIndex(index)) return;
-    final current = _tasks[index];
-    await _repository!.updateTask(task.copyWith(uid: current.uid));
+    await _repository!.updateTask(task);
   }
 
-  Future<void> deleteTask(int index) async {
+  Future<void> deleteTask(Task task) async {
     if (_repository == null) return;
-    if (!_isValidIndex(index)) return;
-    await _repository!.deleteTask(_tasks[index].uid);
+    await _repository!.deleteTask(task.uid);
   }
 
-  Future<void> toggleTaskCompletion(int index) async {
+  Future<void> toggleTaskCompletion(Task task) async {
     if (_repository == null) return;
-    if (!_isValidIndex(index)) return;
-    await _repository!.toggleTaskCompletion(_tasks[index]);
+    await _repository!.toggleTaskCompletion(task);
   }
-
-  bool _isValidIndex(int index) => index >= 0 && index < _tasks.length;
 
   Future<void> _onAuthChanged(firebase_auth.User? user) async {
     _isLoading = true;

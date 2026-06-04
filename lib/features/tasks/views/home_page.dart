@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:geo_tasks/app/theme/app_colors.dart';
 import 'package:geo_tasks/features/tasks/models/task.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/autentication._view_model.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/crud_view_model.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/tasks_view_model.dart';
+import 'package:geo_tasks/features/tasks/widgets/profile_app_bar_avatar.dart';
 import 'package:provider/provider.dart';
 import 'package:geo_tasks/features/tasks/widgets/task_card.dart';
 
@@ -20,12 +22,13 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     final tasksViewModel = Provider.of<TasksViewModel>(context);
     final authVm = context.watch<AuthenticationViewModel>();
+    final user = authVm.currentUserData;
     final userName = authVm.currentUserData?.name ?? 'Usuario';
 
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.appBarBackground,
         elevation: 0,
         scrolledUnderElevation: 0,
         toolbarHeight: 80,
@@ -44,7 +47,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.w700,
-                color: Color(0xFF0B7267),
+                color: AppColors.appBarTitle,
                 height: 1.1,
               ),
             ),
@@ -54,7 +57,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.w500,
-                color: Color(0xFF58615F),
+                color: AppColors.appBarSubtitle,
               ),
             ),
           ],
@@ -62,25 +65,7 @@ class _HomePageState extends State<HomePage> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 16),
-            child: Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  color: const Color(0xFF17A89B),
-                  width: 2,
-                ),
-              ),
-              child: const CircleAvatar(
-                backgroundColor: Color(0xFFDAF5F1),
-                child: Icon(
-                  Icons.person,
-                  color: Color(0xFF0B7267),
-                  size: 32,
-                ),
-              ),
-            ),
+            child: ProfileAppBarAvatar(imageBase64: user?.avatarBase64),
           ),
         ],
         bottom: const PreferredSize(
@@ -88,7 +73,7 @@ class _HomePageState extends State<HomePage> {
           child: Divider(
             height: 1,
             thickness: 1,
-            color: Color(0xFFE5E8E7),
+            color: AppColors.appBarDivider,
           ),
         ),
       ),
@@ -116,7 +101,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   tasksViewModel.errorMessage!,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(color: Colors.red),
+                  style: const TextStyle(color: AppColors.error),
                 ),
               ),
             );
@@ -148,16 +133,15 @@ class _HomePageState extends State<HomePage> {
                 location: task.location,
                 isCompleted: task.isCompleted,
                 onDelete: () async {
-                  await tasksViewModel.deleteTask(index);
+                  await tasksViewModel.deleteTask(task);
                 },
                 onComplete: () async {
-                  await tasksViewModel.toggleTaskCompletion(index);
+                  await tasksViewModel.toggleTaskCompletion(task);
                 },
-                onEdit: () => _crudViewModel.editTask(context, index),
+                onEdit: () => _crudViewModel.editTask(context, task),
                 onSetCurrentLocation: () =>
                     _crudViewModel.setCurrentLocationForTask(
                       context,
-                      index,
                       task,
                     ),
               );

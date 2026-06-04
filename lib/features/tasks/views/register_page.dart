@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geo_tasks/app/router/app_routes.dart';
+import 'package:geo_tasks/app/theme/app_colors.dart';
 import 'package:geo_tasks/features/tasks/viewmodels/autentication._view_model.dart';
 import 'package:geo_tasks/features/tasks/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +18,8 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  bool _obscurePassword = true;
+  bool _obscureConfirmPassword = true;
 
   @override
   void dispose() {
@@ -74,7 +77,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   'Bem-vindo! Por favor, preencha os campos abaixo para criar sua conta.',
                                   style: TextStyle(
                                     fontSize: 16,
-                                    color: Colors.grey[600],
+                                    color: AppColors.textSecondary,
                                   ),
                                   textAlign: TextAlign.center,
                                 ),
@@ -96,16 +99,43 @@ class _RegisterPageState extends State<RegisterPage> {
                                   label: 'Senha',
                                   hintText: 'Digite sua senha',
                                   prefixIcon: Icons.lock,
-                                  suffixIcon: Icons.visibility_off,
                                   controller: _passwordController,
+                                  obscureText: _obscurePassword,
+                                  suffixIconWidget: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscurePassword = !_obscurePassword;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _obscurePassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: 16),
                                 CustomTextField(
                                   label: 'Confirmar Senha',
                                   hintText: 'Digite sua senha novamente',
                                   prefixIcon: Icons.lock,
-                                  suffixIcon: Icons.visibility_off,
                                   controller: _confirmPasswordController,
+                                  obscureText: _obscureConfirmPassword,
+                                  suffixIconWidget: IconButton(
+                                    onPressed: () {
+                                      setState(() {
+                                        _obscureConfirmPassword =
+                                            !_obscureConfirmPassword;
+                                      });
+                                    },
+                                    icon: Icon(
+                                      _obscureConfirmPassword
+                                          ? Icons.visibility_off
+                                          : Icons.visibility,
+                                      color: AppColors.textSecondary,
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: 16),
                                 ElevatedButton(
@@ -161,7 +191,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   const SizedBox(height: 8),
                                   Text(
                                     authVm.errorMessage!,
-                                    style: const TextStyle(color: Colors.red),
+                                    style: const TextStyle(
+                                      color: AppColors.error,
+                                    ),
                                     textAlign: TextAlign.center,
                                   ),
                                 ],

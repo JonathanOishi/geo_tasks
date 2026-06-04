@@ -19,7 +19,6 @@ class CrudViewModel {
 
   Future<void> setCurrentLocationForTask(
     BuildContext context,
-    int index,
     Task task,
   ) async {
     try {
@@ -37,7 +36,6 @@ class CrudViewModel {
           : 'Meu local';
 
       await tasksViewModel.updateTask(
-        index,
         task.copyWith(
           location: locationName,
           latitude: position.latitude,
@@ -59,13 +57,13 @@ class CrudViewModel {
     );
   }
 
-  Future<void> editTask(BuildContext context, int index) async {
+  Future<void> editTask(BuildContext context, Task task) async {
     final tasksViewModel = Provider.of<TasksViewModel>(context, listen: false);
     await Navigator.of(context).pushNamed(
       AppRoutes.addEditTask,
       arguments: AddEditTaskArgs(
         tasksViewModel: tasksViewModel,
-        taskIndex: index,
+        task: task,
       ),
     );
   }

@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
     this.icon,
     this.prefixIcon,
     this.suffixIcon,
+    this.suffixIconWidget,
     this.controller,
     this.readOnly = false,
     this.onTap,
@@ -24,6 +25,7 @@ class CustomTextField extends StatelessWidget {
   final VoidCallback? onTap;
   final IconData? prefixIcon;
   final IconData? suffixIcon;
+  final Widget? suffixIconWidget;
   final bool obscureText;
   final TextInputType? keyboardType;
 
@@ -48,9 +50,13 @@ class CustomTextField extends StatelessWidget {
           controller: controller,
           readOnly: readOnly,
           onTap: onTap,
+          obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,
-            hintStyle: const TextStyle(color: Color(0xFF9AA8A3), fontSize: 18),
+            hintStyle: const TextStyle(
+              color: AppColors.textMuted,
+              fontSize: 18,
+            ),
             filled: true,
             fillColor: AppColors.surfaceContainer,
             contentPadding: const EdgeInsets.symmetric(
@@ -64,7 +70,7 @@ class CustomTextField extends StatelessWidget {
                     child: Icon(prefixIcon, color: AppColors.textSecondary),
                   ),
             suffixIcon: suffixIcon == null
-                ? null
+                ? suffixIconWidget
                 : Padding(
                     padding: const EdgeInsets.only(right: 14),
                     child: Icon(suffixIcon, color: AppColors.textSecondary),

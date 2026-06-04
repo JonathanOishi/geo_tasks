@@ -52,7 +52,7 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
         child: Container(
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFFECF8F4), Color(0xFFF9FCFB)],
+              colors: [AppColors.surfaceSoft, AppColors.surfaceBright],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -115,10 +115,10 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                     height: 106,
                     width: double.infinity,
                     decoration: BoxDecoration(
-                      color: const Color(0xFFC9EDE7),
+                      color: AppColors.surfaceTint,
                       borderRadius: BorderRadius.circular(24),
                       border: Border.all(
-                        color: const Color(0xFF94D7CC),
+                        color: AppColors.surfaceTintStrong,
                         width: 1.2,
                       ),
                     ),
@@ -204,7 +204,6 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
 
                         if (args.isEditing) {
                           await args.tasksViewModel.updateTask(
-                            args.taskIndex!,
                             task,
                           );
                         } else {

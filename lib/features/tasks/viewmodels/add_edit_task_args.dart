@@ -4,16 +4,11 @@ import 'package:geo_tasks/features/tasks/viewmodels/tasks_view_model.dart';
 class AddEditTaskArgs {
   const AddEditTaskArgs({
     required this.tasksViewModel,
-    this.taskIndex,
+    this.task,
   });
 
   final TasksViewModel tasksViewModel;
-  final int? taskIndex;
+  final Task? task;
 
-  bool get isEditing => taskIndex != null;
-
-  Task? get task {
-    if (taskIndex == null) return null;
-    return tasksViewModel.taskAt(taskIndex!);
-  }
+  bool get isEditing => task != null;
 }

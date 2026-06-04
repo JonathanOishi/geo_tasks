@@ -15,12 +15,16 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
   bool _obscurePassword = true;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
     super.dispose();
   }
 
@@ -71,6 +75,11 @@ class _LoginPageState extends State<LoginPage> {
                                   hintText: 'example@example.com',
                                   prefixIcon: Icons.email,
                                   controller: _emailController,
+                                  focusNode: _emailFocusNode,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (_) {
+                                    _passwordFocusNode.requestFocus();
+                                  },
                                   keyboardType: TextInputType.emailAddress,
                                 ),
                                 const SizedBox(height: 16),
@@ -79,6 +88,11 @@ class _LoginPageState extends State<LoginPage> {
                                   hintText: 'Digite sua senha',
                                   prefixIcon: Icons.lock,
                                   controller: _passwordController,
+                                  focusNode: _passwordFocusNode,
+                                  textInputAction: TextInputAction.done,
+                                  onSubmitted: (_) {
+                                    FocusScope.of(context).unfocus();
+                                  },
                                   obscureText: _obscurePassword,
                                   suffixIconWidget: IconButton(
                                     onPressed: () {

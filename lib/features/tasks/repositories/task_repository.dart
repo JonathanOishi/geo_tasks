@@ -54,6 +54,25 @@ class TaskRepository {
     });
   }
 
+  Future<void> deleteCompletedTasks() async {
+    while (true) {
+      final snapshot = await _tasksCollection
+          .where('isCompleted', isEqualTo: true)
+          .limit(500)
+          .get();
+
+      if (snapshot.docs.isEmpty) {
+        break;
+      }
+
+      final batch = _tasksCollection.firestore.batch();
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+      await batch.commit();
+    }
+  }
+
   Future<void> dispose() async {
     await _subscription?.cancel();
   }

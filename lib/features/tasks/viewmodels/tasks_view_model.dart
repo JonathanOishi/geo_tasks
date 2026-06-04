@@ -57,6 +57,11 @@ class TasksViewModel extends ChangeNotifier {
     await _repository!.toggleTaskCompletion(task);
   }
 
+  Future<void> clearCompletedTasksHistory() async {
+    if (_repository == null) return;
+    await _repository!.deleteCompletedTasks();
+  }
+
   Future<void> _onAuthChanged(firebase_auth.User? user) async {
     _isLoading = true;
     _errorMessage = null;

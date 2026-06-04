@@ -9,6 +9,46 @@ import 'package:provider/provider.dart';
 class DashboardPage extends StatelessWidget {
   const DashboardPage({super.key});
 
+  Future<void> _confirmAndClearHistory(
+    BuildContext context,
+    TasksViewModel tasksViewModel,
+  ) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) {
+        return AlertDialog(
+          title: const Text('Excluir todo o historico?'),
+          content: const Text(
+            'Essa acao remove todas as tarefas concluidas e nao pode ser desfeita.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(false),
+              child: const Text('Cancelar'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(dialogContext).pop(true),
+              child: const Text(
+                'Excluir',
+                style: TextStyle(color: AppColors.error),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+
+    if (shouldDelete != true) return;
+
+    await tasksViewModel.clearCompletedTasksHistory();
+    if (!context.mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Historico de concluidas excluido com sucesso.'),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final tasksViewModel = context.watch<TasksViewModel>();
@@ -96,9 +136,30 @@ class DashboardPage extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Historico de concluidas',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Historico de concluidas',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                  ),
+                ),
+                if (tasksViewModel.completedTasks.isNotEmpty)
+                  TextButton.icon(
+                    onPressed: () => _confirmAndClearHistory(
+                      context,
+                      tasksViewModel,
+                    ),
+                    icon: const Icon(
+                      Icons.delete_sweep_outlined,
+                      color: AppColors.error,
+                    ),
+                    label: const Text(
+                      'Excluir historico',
+                      style: TextStyle(color: AppColors.error),
+                    ),
+                  ),
+              ],
             ),
             const SizedBox(height: 12),
             if (tasksViewModel.completedTasks.isEmpty)

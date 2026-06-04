@@ -15,6 +15,9 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.obscureText = false,
     this.keyboardType,
+    this.focusNode,
+    this.textInputAction,
+    this.onSubmitted,
   });
 
   final String? label;
@@ -28,6 +31,9 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixIconWidget;
   final bool obscureText;
   final TextInputType? keyboardType;
+  final FocusNode? focusNode;
+  final TextInputAction? textInputAction;
+  final ValueChanged<String>? onSubmitted;
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +54,12 @@ class CustomTextField extends StatelessWidget {
         TextField(
           keyboardType: keyboardType,
           controller: controller,
+          focusNode: focusNode,
+          textInputAction: textInputAction,
           readOnly: readOnly,
           onTap: onTap,
+          onSubmitted: onSubmitted,
+          onTapOutside: (_) => FocusScope.of(context).unfocus(),
           obscureText: obscureText,
           decoration: InputDecoration(
             hintText: hintText,

@@ -18,6 +18,10 @@ class _RegisterPageState extends State<RegisterPage> {
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController =
       TextEditingController();
+  final FocusNode _nameFocusNode = FocusNode();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passwordFocusNode = FocusNode();
+  final FocusNode _confirmPasswordFocusNode = FocusNode();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -27,6 +31,10 @@ class _RegisterPageState extends State<RegisterPage> {
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
+    _nameFocusNode.dispose();
+    _emailFocusNode.dispose();
+    _passwordFocusNode.dispose();
+    _confirmPasswordFocusNode.dispose();
     super.dispose();
   }
 
@@ -86,6 +94,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   hintText: 'Digite seu nome',
                                   prefixIcon: Icons.person,
                                   controller: _nameController,
+                                  focusNode: _nameFocusNode,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (_) {
+                                    _emailFocusNode.requestFocus();
+                                  },
                                 ),
                                 SizedBox(height: 16),
                                 CustomTextField(
@@ -93,6 +106,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   hintText: 'example@example.com',
                                   prefixIcon: Icons.email,
                                   controller: _emailController,
+                                  focusNode: _emailFocusNode,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (_) {
+                                    _passwordFocusNode.requestFocus();
+                                  },
                                 ),
                                 SizedBox(height: 16),
                                 CustomTextField(
@@ -100,6 +118,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   hintText: 'Digite sua senha',
                                   prefixIcon: Icons.lock,
                                   controller: _passwordController,
+                                  focusNode: _passwordFocusNode,
+                                  textInputAction: TextInputAction.next,
+                                  onSubmitted: (_) {
+                                    _confirmPasswordFocusNode.requestFocus();
+                                  },
                                   obscureText: _obscurePassword,
                                   suffixIconWidget: IconButton(
                                     onPressed: () {
@@ -121,6 +144,11 @@ class _RegisterPageState extends State<RegisterPage> {
                                   hintText: 'Digite sua senha novamente',
                                   prefixIcon: Icons.lock,
                                   controller: _confirmPasswordController,
+                                  focusNode: _confirmPasswordFocusNode,
+                                  textInputAction: TextInputAction.done,
+                                  onSubmitted: (_) {
+                                    FocusScope.of(context).unfocus();
+                                  },
                                   obscureText: _obscureConfirmPassword,
                                   suffixIconWidget: IconButton(
                                     onPressed: () {

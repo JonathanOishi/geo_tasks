@@ -76,6 +76,48 @@ class _AddEditTaskPageState extends State<AddEditTaskPage> {
                     controller: _formViewModel.titleController,
                   ),
                   const SizedBox(height: 18),
+                  CustomTextField(
+                    label: 'CEP',
+                    hintText: 'Digite o CEP para sugerir o endereco',
+                    controller: _formViewModel.cepController,
+                    keyboardType: TextInputType.number,
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (_) async {
+                      final error = await _formViewModel.searchLocationByCep();
+                      if (!mounted) return;
+                      if (error != null) {
+                        _showMessage(error);
+                        return;
+                      }
+                      _showMessage('Endereco preenchido a partir do CEP.');
+                    },
+                    suffixIconWidget: IconButton(
+                      onPressed: () async {
+                        final error = await _formViewModel
+                            .searchLocationByCep();
+                        if (!mounted) return;
+                        if (error != null) {
+                          _showMessage(error);
+                          return;
+                        }
+                        _showMessage('Endereco preenchido a partir do CEP.');
+                      },
+                      icon: const Icon(
+                        Icons.search_rounded,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'A busca por CEP preenche a descricao do local. Para ativacao por perimetro, mantenha a captura por GPS.',
+                    style: TextStyle(
+                      color: AppColors.textSecondary,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 18),
                   Row(
                     children: [
                       Expanded(

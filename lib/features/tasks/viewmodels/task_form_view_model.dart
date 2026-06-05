@@ -4,12 +4,14 @@ import 'package:geo_tasks/features/tasks/utils/task_formatters.dart';
 import 'package:geo_tasks/features/tasks/utils/task_pickers.dart';
 import 'package:geo_tasks/features/tasks/utils/task_validators.dart';
 import 'package:geo_tasks/features/tasks/services/location_service.dart';
+import 'package:geo_tasks/features/tasks/services/via_cep_api.dart';
 import 'package:geolocator/geolocator.dart';
 
 class TaskFormViewModel extends ChangeNotifier {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController dateController = TextEditingController();
   final TextEditingController timeController = TextEditingController();
+  final TextEditingController cepController = TextEditingController();
   final TextEditingController locationController = TextEditingController();
 
   DateTime? _selectedDate;
@@ -84,6 +86,27 @@ class TaskFormViewModel extends ChangeNotifier {
   }
 
   final LocationService _locationService = LocationService();
+  final ViaCepApi _viaCepApi = ViaCepApi();
+
+  Future<String?> searchLocationByCep() async {
+    try {
+      final address = await _viaCepApi.getAddressFromCep(cepController.text);
+      final parts = [
+        address.bairro.trim(),
+        address.localidade.trim(),
+      ].where((part) => part.isNotEmpty).toList();
+
+      if (parts.isEmpty) {
+        return 'Nenhum endereco util foi retornado para esse CEP.';
+      }
+
+      locationController.text = parts.join(', ');
+      notifyListeners();
+      return null;
+    } catch (e) {
+      return e.toString().replaceFirst('Exception: ', '');
+    }
+  }
 
   Future<String?> searchLocation() async {
     try {
@@ -105,6 +128,7 @@ class TaskFormViewModel extends ChangeNotifier {
     titleController.dispose();
     dateController.dispose();
     timeController.dispose();
+    cepController.dispose();
     locationController.dispose();
     super.dispose();
   }

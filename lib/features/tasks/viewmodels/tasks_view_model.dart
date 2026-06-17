@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/foundation.dart';
 import 'package:geo_tasks/features/tasks/models/task.dart';
 import 'package:geo_tasks/features/tasks/repositories/task_repository.dart';
+import 'package:geo_tasks/features/tasks/services/task_sync_coordinator.dart';
 
 class TasksViewModel extends ChangeNotifier {
   TasksViewModel({firebase_auth.FirebaseAuth? auth})
@@ -15,6 +16,7 @@ class TasksViewModel extends ChangeNotifier {
 
   final firebase_auth.FirebaseAuth _auth;
   TaskRepository? _repository;
+  TaskSyncCoordinator? _syncCoordinator;
   StreamSubscription<firebase_auth.User?>? _authSubscription;
   List<Task> _tasks = <Task>[];
   bool _isLoading = true;
@@ -39,22 +41,39 @@ class TasksViewModel extends ChangeNotifier {
 
   Future<void> addTask(Task task) async {
     if (_repository == null) return;
-    await _repository!.addTask(task);
+    if (_syncCoordinator == null) {
+      await _repository!.addTask(task);
+      return;
+    }
+    await _syncCoordinator!.enqueueUpsert(task);
   }
 
   Future<void> updateTask(Task task) async {
     if (_repository == null) return;
-    await _repository!.updateTask(task);
+    if (_syncCoordinator == null) {
+      await _repository!.updateTask(task);
+      return;
+    }
+    await _syncCoordinator!.enqueueUpsert(task);
   }
 
   Future<void> deleteTask(Task task) async {
     if (_repository == null) return;
-    await _repository!.deleteTask(task.uid);
+    if (_syncCoordinator == null) {
+      await _repository!.deleteTask(task.uid);
+      return;
+    }
+    await _syncCoordinator!.enqueueDelete(task);
   }
 
   Future<void> toggleTaskCompletion(Task task) async {
     if (_repository == null) return;
-    await _repository!.toggleTaskCompletion(task);
+    final toggledTask = task.copyWith(isCompleted: !task.isCompleted);
+    if (_syncCoordinator == null) {
+      await _repository!.updateTask(toggledTask);
+      return;
+    }
+    await _syncCoordinator!.enqueueUpsert(toggledTask);
   }
 
   Future<void> clearCompletedTasksHistory() async {
@@ -68,6 +87,7 @@ class TasksViewModel extends ChangeNotifier {
     _tasks = <Task>[];
     await _repository?.dispose();
     _repository = null;
+    _syncCoordinator = null;
     notifyListeners();
 
     if (user == null) {
@@ -77,9 +97,11 @@ class TasksViewModel extends ChangeNotifier {
     }
 
     _repository = TaskRepository(userId: user.uid);
+    _syncCoordinator = TaskSyncCoordinator(repository: _repository!);
     _repository!.listenToTasks(
       onTasks: (tasks) {
         _tasks = tasks;
+        _syncCoordinator?.replaceLocalSnapshot(tasks);
         _isLoading = false;
         _errorMessage = null;
         notifyListeners();

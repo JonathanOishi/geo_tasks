@@ -54,6 +54,19 @@ class TaskRepository {
     });
   }
 
+  Future<Map<String, dynamic>?> fetchTaskRawById(String taskId) async {
+    final doc = await _tasksCollection.doc(taskId).get();
+    final data = doc.data();
+    if (!doc.exists || data == null) {
+      return null;
+    }
+    return <String, dynamic>{...data, 'uid': doc.id};
+  }
+
+  Future<void> upsertTaskRaw(String taskId, Map<String, dynamic> data) async {
+    await _tasksCollection.doc(taskId).set(data);
+  }
+
   Future<void> deleteCompletedTasks() async {
     while (true) {
       final snapshot = await _tasksCollection

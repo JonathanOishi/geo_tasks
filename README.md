@@ -5,7 +5,7 @@ Geo Tasks é um aplicativo Flutter para gerenciamento de tarefas com autenticaç
 ![Flutter](https://img.shields.io/badge/Flutter-3.x-blue)
 ![Provider](https://img.shields.io/badge/State%20Management-Provider-green)
 ![Firebase](https://img.shields.io/badge/Backend-Firebase-orange)
-![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20iOS-lightgrey)
+![Platform](https://img.shields.io/badge/Platform-Android-lightgrey)
 
 <p align="center">
   <a href="https://github.com/JonathanOishi">
@@ -32,9 +32,11 @@ O projeto está organizado por feature e usa MVVM com Provider. A aplicação ab
 - Salvamento das tarefas no Cloud Firestore por usuário
 - Escuta em tempo real das mudanças no Firestore
 - Criação, edição, exclusão e conclusão de tarefas
+- Busca de endereço por CEP via API externa (ViaCEP)
 - Captura de localização via GPS para associar a tarefa
 - Edição da localização diretamente pelo card da home
 - Upload/atualização de avatar do perfil
+- Sincronização offline de tarefas através do package interno `geo_tasks_sync_core`
 - Separação visual entre tarefas pendentes e concluídas
 
 ## Tecnologias
@@ -43,11 +45,13 @@ O projeto está organizado por feature e usa MVVM com Provider. A aplicação ab
 - Provider + ChangeNotifier
 - Firebase Auth
 - Cloud Firestore
+- ViaCEP (API REST externa)
+- Geolocator (GPS)
+- image_picker (câmera/galeria)
 - flutter_dotenv
-- Geolocator
 - flutter_slidable
-- image_picker
 - crystal_navigation_bar
+- geo_tasks_sync_core (package interno desenvolvido pelo autor)
 
 ## Arquitetura
 
@@ -55,6 +59,7 @@ O projeto segue separação por feature com MVVM:
 
 - models: entidades do domínio
 - repositories: acesso ao Firebase e persistência
+- services: integrações externas (ViaCEP, GPS, sincronização)
 - viewmodels: estado e regras de negócio com ChangeNotifier
 - views/widgets: interface e componentes visuais
 
@@ -62,6 +67,7 @@ O projeto segue separação por feature com MVVM:
 
 - `TasksViewModel` observa o Firebase Auth e cria um repositório por usuário logado
 - `TaskRepository` escuta a coleção `users/{uid}/tasks` em tempo real
+- `TaskSyncCoordinator` enfileira alterações (criação, edição, exclusão) e sincroniza com o Firestore através do package `geo_tasks_sync_core`
 - a Home exibe apenas tarefas pendentes
 - o Dashboard exibe o histórico das tarefas concluídas
 - a edição agora trabalha com a task selecionada, sem depender do índice da lista filtrada
@@ -73,9 +79,11 @@ O projeto segue separação por feature com MVVM:
 - `lib/app/theme`: tema e cores
 - `lib/features/tasks/models`: modelos de domínio
 - `lib/features/tasks/repositories`: integração com Firestore
+- `lib/features/tasks/services`: ViaCEP, GPS e sincronização offline
 - `lib/features/tasks/viewmodels`: estado e regras de negócio
 - `lib/features/tasks/views`: telas do app
 - `lib/features/tasks/widgets`: componentes reutilizáveis
+- `test/`: suíte de testes unitários e de widget
 
 ## Configuração Local
 
@@ -94,29 +102,16 @@ FIREBASE_API_KEY_IOS=
 
 O app carrega esse arquivo antes de inicializar o Firebase.
 
-## Como Executar
+## Testes
 
-Instale as dependências:
+O projeto possui testes unitários e de widget cobrindo modelos, validadores, viewmodels, a API externa e os componentes de interface. A suíte completa está em `test/`.
 
-```bash
-flutter pub get
-```
+### 3. Package Interno (geo_tasks_sync_core)
 
-Execute o projeto:
-
-```bash
-flutter run
-```
-
-Se quiser rodar em uma plataforma específica:
-
-```bash
-flutter run -d android
-flutter run -d ios
-```
+Repositório do package: https://github.com/JonathanOishi/geo_tasks_offline_sync
 
 ## Observações
 
-- As tarefas não ficam mais em memória: elas são persistidas no Firestore por usuário.
 - O app depende de login para carregar a coleção correta de tarefas.
 - A tela inicial mostra somente tarefas pendentes; as concluídas aparecem no Dashboard.
+- O build de publicação foi gerado e testado para a plataforma Android.

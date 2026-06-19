@@ -53,6 +53,8 @@ void main() {
 
         vm.initialize(task);
         vm.titleController.text = 'Modificado';
+
+        // Chamar de novo não deve sobrescrever
         vm.initialize(task);
         expect(vm.titleController.text, 'Modificado');
       });
@@ -186,7 +188,8 @@ void main() {
     });
 
     test('dispose não lança exceção', () {
-      expect(() => vm.dispose(), returnsNormally);
+      final localVm = TaskFormViewModel();
+      expect(() => localVm.dispose(), returnsNormally);
     });
   });
 }

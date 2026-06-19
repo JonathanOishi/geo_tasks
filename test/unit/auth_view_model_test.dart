@@ -80,10 +80,12 @@ void main() {
       required String confirmPassword,
     }) {
       if (name.trim().isEmpty) return 'Informe seu nome.';
-      if (email.trim().isEmpty || password.trim().isEmpty)
+      if (email.trim().isEmpty || password.trim().isEmpty) {
         return 'E-mail e senha sao obrigatorios.';
-      if (password.trim() != confirmPassword.trim())
+      }
+      if (password.trim() != confirmPassword.trim()) {
         return 'As senhas nao conferem.';
+      }
       return null;
     }
 

@@ -10,7 +10,7 @@ Geo Tasks é um aplicativo Flutter para gerenciamento de tarefas com autenticaç
 <p align="center">
   <a href="https://github.com/JonathanOishi">
     <img
-      src="https://i.ibb.co/99Spk134/Gemini-Generated-Image-yrfigeyrfigeyrfi-removebg-preview.png"
+      src="https://i.ibb.co/xSsXg3Dw/Gemini-Generated-Image-45hcen45hcen45hc-1.png"
       alt="Geo Tasks"
       width="60%"
     />
